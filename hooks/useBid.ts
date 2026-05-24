@@ -15,7 +15,8 @@ export function usePlaceBid(tournamentId: string) {
       amount: number
     }) => {
       const supabase = createClient()
-      const { data: bid, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: bid, error } = await (supabase as any)
         .from('auction_bids')
         .insert({
           session_id: data.session_id,
