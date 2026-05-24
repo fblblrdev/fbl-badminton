@@ -12,11 +12,7 @@ export async function GET() {
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const service = new TournamentService(supabase)
-    const tournaments = auth.role === 'SUPER_ADMIN'
-      ? await service.getAllTournaments()
-      : auth.role === 'TOURNAMENT_MANAGER'
-        ? await service.getTournamentsByManager(auth.user.id)
-        : await service.getTournamentsByCreator(auth.user.id)
+    const tournaments = await service.getAllTournaments()
 
     return NextResponse.json({ data: tournaments })
   } catch (err) {
@@ -33,7 +29,7 @@ export async function POST(request: Request) {
     const auth = await getAuthUser(supabase)
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (auth.role !== 'SUPER_ADMIN' && auth.role !== 'TOURNAMENT_MANAGER') {
+    if (auth.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

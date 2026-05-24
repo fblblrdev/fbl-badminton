@@ -33,7 +33,7 @@ export default async function TournamentFixturesPage({ params }: Props) {
 
   if (!tournament) notFound()
 
-  const canManage = profile?.role === 'SUPER_ADMIN' || profile?.role === 'TOURNAMENT_MANAGER'
+  const canManage = profile?.role === 'SUPER_ADMIN'
 
   const rounds = fixtures.reduce<Record<number, typeof fixtures>>((acc, f) => {
     const r = f.round

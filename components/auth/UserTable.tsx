@@ -54,7 +54,7 @@ export function UserTable({ users }: { users: Profile[] }) {
                   <Badge
                     variant={
                       u.role === 'SUPER_ADMIN' ? 'destructive' :
-                      u.role === 'TOURNAMENT_MANAGER' ? 'default' : 'secondary'
+                      u.role === 'SUPER_ADMIN' ? 'default' : 'secondary'
                     }
                     className="text-xs"
                   >

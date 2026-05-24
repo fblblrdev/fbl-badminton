@@ -19,7 +19,7 @@ import { QUERY_KEYS } from '@/lib/constants'
 
 export default function AuctionPage() {
   const { id: tournamentId } = useParams<{ id: string }>()
-  const { user, isSuperAdmin, isTournamentManager, isCaptain } = useAuth()
+  const { user, isSuperAdmin, isCaptain } = useAuth()
 
   const { data: tournament } = useQuery<Tournament>({
     queryKey: [QUERY_KEYS.TOURNAMENT, tournamentId],
@@ -40,7 +40,7 @@ export default function AuctionPage() {
     ? auctionState?.teams.find((t) => t.captain?.email === user.email) ?? null
     : null
 
-  const canControl = isSuperAdmin || isTournamentManager
+  const canControl = isSuperAdmin
   const maxBalance = Math.max(...(auctionState?.teams.map((t) => t.balance) ?? [1]))
 
   const sessionStatus = auctionState?.session?.status

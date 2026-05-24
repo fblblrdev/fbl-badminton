@@ -18,7 +18,6 @@ export default async function HomePage() {
   const role = (profileData as { role: string } | null)?.role
 
   if (role === 'SUPER_ADMIN') redirect('/admin')
-  if (role === 'TOURNAMENT_MANAGER') redirect('/manager')
   if (role === 'CAPTAIN') redirect('/captain')
 
   // Profile missing or unknown role — show a plain waiting screen instead of looping

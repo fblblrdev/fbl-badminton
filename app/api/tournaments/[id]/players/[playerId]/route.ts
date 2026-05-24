@@ -36,7 +36,7 @@ export async function PATCH(request: Request, { params }: Params) {
     const auth = await getAuthUser(supabase)
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (auth.role !== 'SUPER_ADMIN' && auth.role !== 'TOURNAMENT_MANAGER') {
+    if (auth.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -69,7 +69,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const auth = await getAuthUser(supabase)
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (auth.role !== 'SUPER_ADMIN' && auth.role !== 'TOURNAMENT_MANAGER') {
+    if (auth.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

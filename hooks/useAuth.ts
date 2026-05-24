@@ -56,7 +56,6 @@ export function useAuth() {
     error,
     isAuthenticated: !!user,
     isSuperAdmin: user?.profile?.role === 'SUPER_ADMIN',
-    isTournamentManager: user?.profile?.role === 'TOURNAMENT_MANAGER',
     isCaptain: user?.profile?.role === 'CAPTAIN',
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,

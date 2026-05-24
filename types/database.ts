@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type UserRole = 'SUPER_ADMIN' | 'TOURNAMENT_MANAGER' | 'CAPTAIN'
+export type UserRole = 'SUPER_ADMIN' | 'CAPTAIN'
 export type TournamentStatus = 'draft' | 'active' | 'completed'
 export type AuctionSessionStatus = 'pending' | 'active' | 'paused' | 'completed'
 export type Gender = 'male' | 'female'

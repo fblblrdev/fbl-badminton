@@ -16,8 +16,8 @@ export default async function ManagerLayout({ children }: { children: React.Reac
     .maybeSingle()
   const profile = profileData as { role: string } | null
 
-  if (profile?.role !== 'TOURNAMENT_MANAGER' && profile?.role !== 'SUPER_ADMIN') {
-    redirect('/')
+  if (profile?.role !== 'SUPER_ADMIN') {
+    redirect('/admin')
   }
 
   return (

@@ -3,12 +3,11 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
-// Admin-only: creates TOURNAMENT_MANAGER accounts
 const createUserSchema = z.object({
   full_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(['TOURNAMENT_MANAGER']),
+  role: z.enum(['SUPER_ADMIN', 'CAPTAIN']),
 })
 
 export async function POST(request: Request) {

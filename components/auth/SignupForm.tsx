@@ -57,12 +57,8 @@ export function SignupForm() {
         return
       }
 
-      // Auto-confirmed — redirect based on role
-      if (data.role === 'TOURNAMENT_MANAGER') {
-        router.push('/manager')
-      } else {
-        router.push('/captain')
-      }
+      // Auto-confirmed — redirect to captain dashboard
+      router.push('/captain')
       router.refresh()
     } catch {
       setServerError('An unexpected error occurred. Please try again.')
@@ -124,21 +120,6 @@ export function SignupForm() {
         />
         {errors.email && (
           <p className="text-xs text-red-400">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
-        <select
-          id="role"
-          {...register('role')}
-          className="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="CAPTAIN">Captain</option>
-          <option value="TOURNAMENT_MANAGER">Tournament Manager</option>
-        </select>
-        {errors.role && (
-          <p className="text-xs text-red-400">{errors.role.message}</p>
         )}
       </div>
 

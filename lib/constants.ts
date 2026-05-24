@@ -1,8 +1,7 @@
 import type { UserRole, TournamentStatus, AuctionSessionStatus, MatchType, FixtureType, Gender } from '@/types'
 
 export const ROLES: Record<UserRole, string> = {
-  SUPER_ADMIN: 'Super Admin',
-  TOURNAMENT_MANAGER: 'Tournament Manager',
+  SUPER_ADMIN: 'Admin',
   CAPTAIN: 'Captain',
 }
 
@@ -57,7 +56,6 @@ export const ROUTES = {
   ADMIN: '/admin',
   ADMIN_TOURNAMENTS: '/admin/tournaments',
   ADMIN_NEW_TOURNAMENT: '/admin/tournaments/new',
-  MANAGER: '/manager',
   CAPTAIN: '/captain',
   AUCTION: '/auction',
   FIXTURES: '/fixtures',

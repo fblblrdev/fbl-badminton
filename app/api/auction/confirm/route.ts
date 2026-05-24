@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const supabase = await createClient()
     const auth = await getAuthUser(supabase)
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    if (auth.role !== 'SUPER_ADMIN' && auth.role !== 'TOURNAMENT_MANAGER') {
+    if (auth.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Forbidden: Only admins can confirm bids' }, { status: 403 })
     }
 

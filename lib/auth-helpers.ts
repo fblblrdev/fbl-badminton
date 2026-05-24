@@ -25,5 +25,5 @@ export async function getAuthUser(
 }
 
 export function isAdminRole(role: UserRole | null): boolean {
-  return role === 'SUPER_ADMIN' || role === 'TOURNAMENT_MANAGER'
+  return role === 'SUPER_ADMIN'
 }

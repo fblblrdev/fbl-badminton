@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Enums
-CREATE TYPE user_role AS ENUM ('SUPER_ADMIN', 'TOURNAMENT_MANAGER', 'CAPTAIN');
+CREATE TYPE user_role AS ENUM ('SUPER_ADMIN', 'CAPTAIN');
 CREATE TYPE tournament_status AS ENUM ('draft', 'active', 'completed');
 CREATE TYPE auction_session_status AS ENUM ('pending', 'active', 'paused', 'completed');
 CREATE TYPE gender AS ENUM ('male', 'female');

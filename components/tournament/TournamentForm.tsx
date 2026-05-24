@@ -3,7 +3,6 @@
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { tournamentSchema, type TournamentFormValues } from '@/lib/validations/tournament'
 import { useCreateTournament } from '@/hooks/useTournament'
 import { Button } from '@/components/ui/button'
@@ -12,7 +11,6 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { SkillCategoryForm } from './SkillCategoryForm'
 import { toast } from '@/hooks/use-toast'
 import { ROUTES, DEFAULT_TIMER_SECONDS, DEFAULT_AUCTION_INCREMENT, DEFAULT_AUCTION_POINTS } from '@/lib/constants'
@@ -23,17 +21,9 @@ interface TournamentFormProps {
   tournamentId?: string
 }
 
-interface ManagerCredentials {
-  email: string
-  password: string
-  full_name: string
-}
-
 export function TournamentForm({ defaultValues, mode = 'create', tournamentId }: TournamentFormProps) {
   const router = useRouter()
   const createMutation = useCreateTournament()
-  const [credentials, setCredentials] = useState<ManagerCredentials | null>(null)
-  const [showPassword, setShowPassword] = useState(false)
 
   const methods = useForm<TournamentFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,54 +46,14 @@ export function TournamentForm({ defaultValues, mode = 'create', tournamentId }:
     },
   })
 
-  const { register, handleSubmit, watch, setValue, getValues, formState: { errors, isSubmitting } } = methods
+  const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = methods
   const captainIsPlayer = watch('captain_is_player')
-
-  // Manager fields are outside the Zod schema — read via getValues with unknown cast
-  const getManagerField = (field: string): string =>
-    ((getValues as unknown as (f: string) => unknown)(field) as string) ?? ''
 
   const onSubmit = async (data: TournamentFormValues) => {
     try {
-      // If manager credentials provided, create the manager account first
-      const managerName = getManagerField('manager_name')
-      const managerEmail = getManagerField('manager_email')
-      const managerPassword = getManagerField('manager_password')
-      const hasManager = !!(managerName && managerEmail && managerPassword)
-
-      let managerId: string | undefined
-      if (hasManager) {
-        const userRes = await fetch('/api/admin/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            full_name: managerName,
-            email: managerEmail,
-            password: managerPassword,
-            role: 'TOURNAMENT_MANAGER',
-          }),
-        })
-        if (!userRes.ok) {
-          const err = await userRes.json()
-          const errMsg = typeof err.error === 'string'
-            ? err.error
-            : err.error?.formErrors?.[0]
-              ?? Object.values(err.error?.fieldErrors ?? {}).flat()[0]
-              ?? 'Failed to create manager account'
-          throw new Error(errMsg)
-        }
-        const userJson = await userRes.json()
-        managerId = userJson.user?.id as string | undefined
-      }
-
-      await createMutation.mutateAsync({ ...data, manager_id: managerId })
-
-      if (hasManager) {
-        setCredentials({ email: managerEmail, password: managerPassword, full_name: managerName })
-      } else {
-        toast({ title: 'Tournament created successfully!', variant: 'default' })
-        router.push(ROUTES.ADMIN_TOURNAMENTS)
-      }
+      await createMutation.mutateAsync({ ...data })
+      toast({ title: 'Tournament created successfully!', variant: 'default' })
+      router.push(ROUTES.ADMIN_TOURNAMENTS)
     } catch (error) {
       toast({
         title: 'Error',
@@ -267,55 +217,6 @@ export function TournamentForm({ defaultValues, mode = 'create', tournamentId }:
 
         <SkillCategoryForm />
 
-        {mode === 'create' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Tournament Manager Login</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Optionally create a manager account to assign to this tournament.
-              </p>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2 space-y-2">
-                <Label htmlFor="manager_name">Full Name</Label>
-                <Input
-                  id="manager_name"
-                  {...register('manager_name' as never)}
-                  placeholder="Jane Doe"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="manager_email">Email</Label>
-                <Input
-                  id="manager_email"
-                  type="email"
-                  {...register('manager_email' as never)}
-                  placeholder="manager@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="manager_password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="manager_password"
-                    type={showPassword ? 'text' : 'password'}
-                    {...register('manager_password' as never)}
-                    placeholder="Min 6 characters"
-                    className="pr-16"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    {showPassword ? 'Hide' : 'Show'}
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <div className="flex gap-3 justify-end pt-2">
           <Button
             type="button"
@@ -330,39 +231,6 @@ export function TournamentForm({ defaultValues, mode = 'create', tournamentId }:
           </Button>
         </div>
       </form>
-
-      <Dialog open={!!credentials} onOpenChange={(open) => { if (!open) router.push(ROUTES.ADMIN_TOURNAMENTS) }}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Tournament Created</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Tournament and manager account created. Share these credentials — the password won&apos;t be shown again.
-          </p>
-          <div className="rounded-md bg-muted p-4 font-mono text-sm space-y-1">
-            <p><span className="text-muted-foreground">Name:</span> {credentials?.full_name}</p>
-            <p><span className="text-muted-foreground">Email:</span> {credentials?.email}</p>
-            <p><span className="text-muted-foreground">Password:</span> {credentials?.password}</p>
-          </div>
-          <Button
-            onClick={() => {
-              if (credentials) {
-                navigator.clipboard.writeText(
-                  `Name: ${credentials.full_name}\nEmail: ${credentials.email}\nPassword: ${credentials.password}`
-                )
-                toast({ title: 'Copied to clipboard' })
-              }
-            }}
-            variant="outline"
-            className="w-full"
-          >
-            Copy Credentials
-          </Button>
-          <Button className="w-full" onClick={() => router.push(ROUTES.ADMIN_TOURNAMENTS)}>
-            Done
-          </Button>
-        </DialogContent>
-      </Dialog>
     </FormProvider>
   )
 }

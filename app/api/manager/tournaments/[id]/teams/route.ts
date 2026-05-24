@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: Params) {
   const { data: profileData } = await supabase
     .from('profiles').select('role').eq('id', user.id).maybeSingle()
   const profile = profileData as { role: string } | null
-  if (profile?.role !== 'TOURNAMENT_MANAGER' && profile?.role !== 'SUPER_ADMIN') {
+  if (profile?.role !== 'SUPER_ADMIN') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
@@ -39,15 +39,11 @@ export async function POST(request: Request, { params }: Params) {
 
   const { name, captain_player_id, captain_email, captain_password } = parsed.data
 
-  // Verify tournament exists — managers may only create teams in their assigned tournament
   const { data: tournament } = await supabase
-    .from('tournaments').select('id, auction_points, manager_id').eq('id', tournamentId).maybeSingle()
+    .from('tournaments').select('id, auction_points').eq('id', tournamentId).maybeSingle()
   if (!tournament) return NextResponse.json({ error: 'Tournament not found' }, { status: 404 })
 
-  const t = tournament as { id: string; auction_points: number; manager_id: string | null }
-  if (profile?.role === 'TOURNAMENT_MANAGER' && t.manager_id !== user.id) {
-    return NextResponse.json({ error: 'Forbidden: you are not assigned to this tournament' }, { status: 403 })
-  }
+  const t = tournament as { id: string; auction_points: number }
 
   const playerRepo = new PlayerRepository(supabase)
   const captainPlayer = await playerRepo.findById(captain_player_id)

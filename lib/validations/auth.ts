@@ -23,7 +23,7 @@ export const signupSchema = z.object({
     .string()
     .min(6, 'Password must be at least 6 characters'),
   confirm_password: z.string().min(1, 'Please confirm your password'),
-  role: z.enum(['TOURNAMENT_MANAGER', 'CAPTAIN']),
+  role: z.enum(['CAPTAIN']),
 }).refine((data) => data.password === data.confirm_password, {
   message: 'Passwords do not match',
   path: ['confirm_password'],

@@ -17,7 +17,7 @@ const schema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.enum(['TOURNAMENT_MANAGER']),
+  role: z.enum(['SUPER_ADMIN']),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -35,7 +35,7 @@ export function CreateUserButton() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { role: 'TOURNAMENT_MANAGER' },
+    defaultValues: { role: 'SUPER_ADMIN' },
   })
 
   const onSubmit = async (data: FormValues) => {
@@ -101,9 +101,9 @@ export function CreateUserButton() {
             <div className="space-y-2">
               <Label>Role</Label>
               <p className="text-sm text-slate-400 bg-slate-800 border border-slate-700 rounded-md px-3 py-2">
-                Tournament Manager
+                Admin
               </p>
-              <input type="hidden" {...register('role')} value="TOURNAMENT_MANAGER" />
+              <input type="hidden" {...register('role')} value="SUPER_ADMIN" />
             </div>
 
             <div className="space-y-2">

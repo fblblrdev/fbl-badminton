@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const auth = await getAuthUser(supabase)
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (auth.role !== 'CAPTAIN' && auth.role !== 'SUPER_ADMIN' && auth.role !== 'TOURNAMENT_MANAGER') {
+    if (auth.role !== 'CAPTAIN' && auth.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Forbidden: Only captains can place bids' }, { status: 403 })
     }
 

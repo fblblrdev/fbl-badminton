@@ -19,12 +19,11 @@ import { ROUTES, ROLES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { href: ROUTES.AUCTION, label: 'Auction', roles: ['SUPER_ADMIN', 'TOURNAMENT_MANAGER', 'CAPTAIN'] },
-  { href: ROUTES.FIXTURES, label: 'Fixtures', roles: ['SUPER_ADMIN', 'TOURNAMENT_MANAGER', 'CAPTAIN'] },
-  { href: ROUTES.MATCHES, label: 'Matches', roles: ['SUPER_ADMIN', 'TOURNAMENT_MANAGER', 'CAPTAIN'] },
-  { href: ROUTES.RANKINGS, label: 'Rankings', roles: ['SUPER_ADMIN', 'TOURNAMENT_MANAGER', 'CAPTAIN'] },
+  { href: ROUTES.AUCTION, label: 'Auction', roles: ['SUPER_ADMIN', 'CAPTAIN'] },
+  { href: ROUTES.FIXTURES, label: 'Fixtures', roles: ['SUPER_ADMIN', 'CAPTAIN'] },
+  { href: ROUTES.MATCHES, label: 'Matches', roles: ['SUPER_ADMIN', 'CAPTAIN'] },
+  { href: ROUTES.RANKINGS, label: 'Rankings', roles: ['SUPER_ADMIN', 'CAPTAIN'] },
   { href: ROUTES.ADMIN, label: 'Admin', roles: ['SUPER_ADMIN'] },
-  { href: ROUTES.MANAGER, label: 'Manager', roles: ['TOURNAMENT_MANAGER'] },
   { href: ROUTES.CAPTAIN, label: 'My Team', roles: ['CAPTAIN'] },
 ]
 

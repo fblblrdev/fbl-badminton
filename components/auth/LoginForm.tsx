@@ -56,8 +56,6 @@ export function LoginForm() {
       const role = profile?.role
       if (role === 'SUPER_ADMIN') {
         router.replace('/admin')
-      } else if (role === 'TOURNAMENT_MANAGER') {
-        router.replace('/manager')
       } else if (role === 'CAPTAIN') {
         router.replace('/captain')
       } else {

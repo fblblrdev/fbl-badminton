@@ -28,7 +28,7 @@ export default async function MatchDetailPage({ params }: Props) {
 
   if (!match) notFound()
 
-  const canScore = profile?.role === 'SUPER_ADMIN' || profile?.role === 'TOURNAMENT_MANAGER'
+  const canScore = profile?.role === 'SUPER_ADMIN'
 
   const statusVariant = {
     pending: 'secondary' as const,

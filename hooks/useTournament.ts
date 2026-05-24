@@ -53,7 +53,7 @@ export function useCreateTournament() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: TournamentFormValues & { manager_id?: string }) => {
+    mutationFn: async (data: TournamentFormValues) => {
       const res = await fetch('/api/tournaments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

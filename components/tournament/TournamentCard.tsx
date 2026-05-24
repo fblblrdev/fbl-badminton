@@ -36,7 +36,6 @@ const statusVariant = {
 
 export function TournamentCard({ tournament, role }: TournamentCardProps) {
   const isAdmin = role === 'SUPER_ADMIN'
-  const isManager = role === 'TOURNAMENT_MANAGER'
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
 
@@ -104,10 +103,10 @@ export function TournamentCard({ tournament, role }: TournamentCardProps) {
       </CardContent>
 
       <CardFooter className="gap-2 pt-0">
-        {(isAdmin || isManager) && (
+        {isAdmin && (
           <>
             <Button asChild size="sm" variant="outline" className="flex-1">
-              <Link href={isAdmin ? `/admin/tournaments/${tournament.id}` : `/manager/tournaments/${tournament.id}`}>
+              <Link href={`/admin/tournaments/${tournament.id}`}>
                 <Trophy className="h-3.5 w-3.5 mr-1.5" />
                 Manage
               </Link>
