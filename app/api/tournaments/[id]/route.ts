@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { TournamentService } from '@/services/tournament'
 import { tournamentSchema } from '@/lib/validations/tournament'
 import { getAuthUser } from '@/lib/auth-helpers'
@@ -74,8 +75,26 @@ export async function DELETE(_req: Request, { params }: Params) {
       return NextResponse.json({ error: 'Forbidden: Only super admins can delete tournaments' }, { status: 403 })
     }
 
-    const service = new TournamentService(supabase)
-    await service.deleteTournament(id, auth.user.id, auth.role ?? undefined)
+    const admin = createAdminClient()
+
+    // Delete in FK-safe order: bids → results → sessions → team_players → teams → rest (cascades handle players/fixtures/etc)
+    const { data: sessions } = await admin.from('auction_sessions').select('id').eq('tournament_id', id)
+    const sessionIds = (sessions ?? []).map((s) => s.id)
+
+    if (sessionIds.length > 0) {
+      await admin.from('auction_bids').delete().in('session_id', sessionIds)
+      await admin.from('auction_results').delete().in('session_id', sessionIds)
+      await admin.from('auction_sessions').delete().in('id', sessionIds)
+    }
+
+    const { data: teams } = await admin.from('teams').select('id').eq('tournament_id', id)
+    const teamIds = (teams ?? []).map((t) => t.id)
+    if (teamIds.length > 0) {
+      await admin.from('team_players').delete().in('team_id', teamIds)
+      await admin.from('teams').delete().in('id', teamIds)
+    }
+
+    await admin.from('tournaments').delete().eq('id', id)
 
     return NextResponse.json({ data: null })
   } catch (err) {

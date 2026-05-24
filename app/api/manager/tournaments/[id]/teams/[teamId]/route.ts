@@ -43,7 +43,11 @@ export async function DELETE(_request: Request, { params }: Params) {
     }
   }
 
-  // Delete the team (cascade removes team_players)
+  // Delete in FK-safe order: bids referencing this team → team_players → team
+  await adminClient.from('auction_bids').delete().eq('team_id', teamId)
+  await adminClient.from('auction_results').delete().eq('team_id', teamId)
+  await adminClient.from('team_players').delete().eq('team_id', teamId)
+
   const { error: deleteError } = await adminClient
     .from('teams')
     .delete()
