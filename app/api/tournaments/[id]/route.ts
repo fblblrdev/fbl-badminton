@@ -78,23 +78,25 @@ export async function DELETE(_req: Request, { params }: Params) {
     const admin = createAdminClient()
 
     // Delete in FK-safe order: bids → results → sessions → team_players → teams → rest (cascades handle players/fixtures/etc)
-    const { data: sessions } = await admin.from('auction_sessions').select('id').eq('tournament_id', id)
-    const sessionIds = (sessions ?? []).map((s) => s.id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const adminAny = admin as any
+    const { data: sessions } = await adminAny.from('auction_sessions').select('id').eq('tournament_id', id)
+    const sessionIds = ((sessions ?? []) as { id: string }[]).map((s) => s.id)
 
     if (sessionIds.length > 0) {
-      await admin.from('auction_bids').delete().in('session_id', sessionIds)
-      await admin.from('auction_results').delete().in('session_id', sessionIds)
-      await admin.from('auction_sessions').delete().in('id', sessionIds)
+      await adminAny.from('auction_bids').delete().in('session_id', sessionIds)
+      await adminAny.from('auction_results').delete().in('session_id', sessionIds)
+      await adminAny.from('auction_sessions').delete().in('id', sessionIds)
     }
 
-    const { data: teams } = await admin.from('teams').select('id').eq('tournament_id', id)
-    const teamIds = (teams ?? []).map((t) => t.id)
+    const { data: teams } = await adminAny.from('teams').select('id').eq('tournament_id', id)
+    const teamIds = ((teams ?? []) as { id: string }[]).map((t) => t.id)
     if (teamIds.length > 0) {
-      await admin.from('team_players').delete().in('team_id', teamIds)
-      await admin.from('teams').delete().in('id', teamIds)
+      await adminAny.from('team_players').delete().in('team_id', teamIds)
+      await adminAny.from('teams').delete().in('id', teamIds)
     }
 
-    await admin.from('tournaments').delete().eq('id', id)
+    await adminAny.from('tournaments').delete().eq('id', id)
 
     return NextResponse.json({ data: null })
   } catch (err) {
