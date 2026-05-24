@@ -234,31 +234,60 @@ export class AuctionService {
     return { result, session: updatedSession }
   }
 
+  async skipPlayer(sessionId: string): Promise<AuctionSession> {
+    const session = await this.auctionRepo.findSessionById(sessionId)
+    if (!session) throw new Error('Session not found')
+    if (!session.current_player_id) throw new Error('No player currently up for auction')
+
+    // Record this player as skipped so it goes to the back of the queue
+    const skipped = [...(session.skipped_player_ids ?? []), session.current_player_id]
+
+    return this.moveToNextPlayerInternal(sessionId, session, skipped)
+  }
+
   async moveToNextPlayer(sessionId: string): Promise<AuctionSession> {
     const session = await this.auctionRepo.findSessionById(sessionId)
     if (!session) throw new Error('Session not found')
 
-    const tournament = await this.tournamentRepo.findById(session.tournament_id)
-    if (!tournament) throw new Error('Tournament not found')
+    return this.moveToNextPlayerInternal(sessionId, session, session.skipped_player_ids ?? [])
+  }
 
+  private async moveToNextPlayerInternal(
+    sessionId: string,
+    session: AuctionSession,
+    skippedIds: string[]
+  ): Promise<AuctionSession> {
     const unassignedPlayers = await this.playerRepo.findUnassigned(session.tournament_id)
     const captains = await this.playerRepo.findCaptains(session.tournament_id)
 
-    const availablePlayers = unassignedPlayers.filter(
+    // All eligible players excluding captains and the current player
+    const eligible = unassignedPlayers.filter(
       (p) => !captains.some((c) => c.id === p.id) && p.id !== session.current_player_id
     )
 
-    if (availablePlayers.length === 0) {
+    // Non-skipped players first, then skipped players at the end (preserving their relative order)
+    const nonSkipped = eligible.filter((p) => !skippedIds.includes(p.id))
+    const skippedQueue = skippedIds
+      .map((id) => eligible.find((p) => p.id === id))
+      .filter((p): p is NonNullable<typeof p> => p !== undefined)
+
+    const queue = [...nonSkipped, ...skippedQueue]
+
+    if (queue.length === 0) {
       return this.auctionRepo.updateSession(sessionId, {
         status: 'completed',
         current_player_id: null,
+        skipped_player_ids: [],
       })
     }
 
-    const nextPlayer = availablePlayers[0]
+    const nextPlayer = queue[0]
+    // Remove from skipped list once they become current
+    const updatedSkipped = skippedIds.filter((id) => id !== nextPlayer.id)
 
     return this.auctionRepo.updateSession(sessionId, {
       current_player_id: nextPlayer.id,
+      skipped_player_ids: updatedSkipped,
     })
   }
 }

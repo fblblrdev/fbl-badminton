@@ -99,6 +99,7 @@ CREATE TABLE auction_sessions (
   tournament_id UUID NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
   status auction_session_status NOT NULL DEFAULT 'pending',
   current_player_id UUID REFERENCES players(id) ON DELETE SET NULL,
+  skipped_player_ids UUID[] NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

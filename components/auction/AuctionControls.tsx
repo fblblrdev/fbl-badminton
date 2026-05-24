@@ -74,8 +74,8 @@ export function AuctionControls({
   const handleNextPlayer = async () => {
     if (!session) return
     try {
-      await nextPlayer.mutateAsync({ session_id: session.id, tournament_id: tournamentId })
-      toast({ title: 'Moving to next player', variant: 'default' })
+      await nextPlayer.mutateAsync({ session_id: session.id, tournament_id: tournamentId, skip: true })
+      toast({ title: 'Player skipped — moved to end of queue', variant: 'default' })
     } catch (err) {
       toast({
         title: 'Error',

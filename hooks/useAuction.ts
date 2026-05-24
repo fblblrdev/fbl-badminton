@@ -78,11 +78,11 @@ export function useNextPlayer() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: { session_id: string; tournament_id: string }) => {
+    mutationFn: async (data: { session_id: string; tournament_id: string; skip?: boolean }) => {
       const res = await fetch('/api/auction/next', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: data.session_id }),
+        body: JSON.stringify({ session_id: data.session_id, skip: data.skip ?? false }),
       })
       if (!res.ok) {
         const err = await res.json()

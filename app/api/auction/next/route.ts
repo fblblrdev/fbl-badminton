@@ -22,8 +22,11 @@ export async function POST(request: Request) {
       )
     }
 
+    const isSkip = (body as { skip?: boolean }).skip === true
     const service = new AuctionService(supabase)
-    const session = await service.moveToNextPlayer(result.data.session_id)
+    const session = isSkip
+      ? await service.skipPlayer(result.data.session_id)
+      : await service.moveToNextPlayer(result.data.session_id)
 
     return NextResponse.json({ data: session })
   } catch (err) {

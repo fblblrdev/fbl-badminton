@@ -43,10 +43,11 @@ export class TournamentRepository extends BaseRepository {
   }
 
   async findByManager(managerId: string): Promise<Tournament[]> {
+    // Return tournaments assigned to this manager OR created by them
     const { data, error } = await this.client
       .from('tournaments')
       .select('*')
-      .eq('manager_id', managerId)
+      .or(`manager_id.eq.${managerId},created_by.eq.${managerId}`)
       .order('created_at', { ascending: false })
 
     if (error) throw new Error(error.message)

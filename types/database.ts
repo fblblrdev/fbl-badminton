@@ -223,6 +223,7 @@ export interface Database {
           tournament_id: string
           status: AuctionSessionStatus
           current_player_id: string | null
+          skipped_player_ids: string[]
           created_at: string
           updated_at: string
         }
@@ -231,6 +232,7 @@ export interface Database {
           tournament_id: string
           status?: AuctionSessionStatus
           current_player_id?: string | null
+          skipped_player_ids?: string[]
           created_at?: string
           updated_at?: string
         }
@@ -239,6 +241,7 @@ export interface Database {
           tournament_id?: string
           status?: AuctionSessionStatus
           current_player_id?: string | null
+          skipped_player_ids?: string[]
           created_at?: string
           updated_at?: string
         }
