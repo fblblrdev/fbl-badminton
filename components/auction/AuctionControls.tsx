@@ -60,7 +60,9 @@ export function AuctionControls({
         amount: currentBid.amount,
         tournament_id: tournamentId,
       })
-      toast({ title: `${currentPlayer.name} sold to ${currentBid.team?.name}!`, variant: 'default' })
+      toast({ title: `${currentPlayer.name} sold to ${currentBid.team?.name}!` })
+      // Automatically advance to the next player
+      await nextPlayer.mutateAsync({ session_id: session.id, tournament_id: tournamentId })
     } catch (err) {
       toast({
         title: 'Error',

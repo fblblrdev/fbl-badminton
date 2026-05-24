@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public paths — anyone can access (no auth required)
-  const publicPaths = ['/login', '/signup', '/api/']
+  const publicPaths = ['/login', '/signup', '/api/', '/watch/']
   const isPublicPath = publicPaths.some((p) => pathname.startsWith(p))
 
   // If not authenticated and not a public path → redirect to /login
