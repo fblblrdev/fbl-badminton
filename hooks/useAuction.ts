@@ -16,7 +16,7 @@ export function useAuctionState(tournamentId: string) {
     queryKey: [QUERY_KEYS.AUCTION_STATE, tournamentId],
     queryFn: () => fetchAuctionState(tournamentId),
     enabled: !!tournamentId,
-    refetchInterval: 5000,
+    refetchInterval: 500,
   })
 }
 
