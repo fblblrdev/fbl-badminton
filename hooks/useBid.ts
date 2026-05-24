@@ -1,6 +1,7 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
 import { QUERY_KEYS } from '@/lib/constants'
 
 export function usePlaceBid(tournamentId: string) {
@@ -13,16 +14,21 @@ export function usePlaceBid(tournamentId: string) {
       team_id: string
       amount: number
     }) => {
-      const res = await fetch('/api/auction/bid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error ?? 'Failed to place bid')
-      }
-      return res.json()
+      const supabase = createClient()
+      const { data: bid, error } = await supabase
+        .from('auction_bids')
+        .insert({
+          session_id: data.session_id,
+          player_id: data.player_id,
+          team_id: data.team_id,
+          amount: data.amount,
+          is_winning: true,
+        })
+        .select('*, team:teams(*), player:players(*)')
+        .single()
+
+      if (error) throw new Error(error.message)
+      return bid
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

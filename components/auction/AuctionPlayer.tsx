@@ -1,18 +1,19 @@
 'use client'
 
-import { User, Crown } from 'lucide-react'
+import { User, Crown, Gavel } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { Player } from '@/types'
+import type { Player, AuctionBid } from '@/types'
 import { GENDER_OPTIONS } from '@/lib/constants'
 
 interface AuctionPlayerProps {
   player: Player | null
+  currentBid?: AuctionBid | null
   isLoading?: boolean
 }
 
-export function AuctionPlayer({ player, isLoading }: AuctionPlayerProps) {
+export function AuctionPlayer({ player, currentBid, isLoading }: AuctionPlayerProps) {
   if (isLoading) {
     return (
       <Card className="border-blue-900/50 bg-gradient-to-br from-slate-900 to-slate-950">
@@ -79,13 +80,33 @@ export function AuctionPlayer({ player, isLoading }: AuctionPlayerProps) {
           )}
         </div>
 
-        <div className="inline-flex items-center justify-center bg-blue-950/50 border border-blue-800/50 rounded-lg px-6 py-3">
-          <div className="text-center">
+        <div className="flex items-center justify-center gap-3">
+          <div className="bg-blue-950/50 border border-blue-800/50 rounded-lg px-5 py-3 text-center">
             <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Base Price</p>
             <p className="text-2xl font-bold text-blue-400">
               {player.base_price.toLocaleString()} pts
             </p>
           </div>
+
+          {currentBid ? (
+            <div className="bg-emerald-950/50 border border-emerald-700/50 rounded-lg px-5 py-3 text-center">
+              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-center gap-1">
+                <Gavel className="h-3 w-3" /> Highest Bid
+              </p>
+              <p className="text-2xl font-bold text-emerald-400">
+                {currentBid.amount.toLocaleString()} pts
+              </p>
+              <p className="text-xs text-slate-400 mt-1">
+                by <span className="text-emerald-300 font-medium">{currentBid.team?.name ?? '—'}</span>
+              </p>
+            </div>
+          ) : (
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg px-5 py-3 text-center">
+              <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Highest Bid</p>
+              <p className="text-2xl font-bold text-slate-500">—</p>
+              <p className="text-xs text-slate-600 mt-1">No bids yet</p>
+            </div>
+          )}
         </div>
 
         {(player.phone || player.email) && (

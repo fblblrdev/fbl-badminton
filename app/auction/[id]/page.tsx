@@ -109,6 +109,7 @@ export default function AuctionPage() {
             <div className="space-y-4">
               <AuctionPlayer
                 player={auctionState?.currentPlayer ?? null}
+                currentBid={auctionState?.currentBid ?? null}
                 isLoading={isLoading}
               />
 
