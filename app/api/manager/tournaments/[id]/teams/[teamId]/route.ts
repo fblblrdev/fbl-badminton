@@ -44,7 +44,7 @@ export async function DELETE(_request: Request, { params }: Params) {
   }
 
   // Delete the team (cascade removes team_players)
-  const { error: deleteError } = await supabase
+  const { error: deleteError } = await adminClient
     .from('teams')
     .delete()
     .eq('id', teamId)
