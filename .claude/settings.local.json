@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv claude.md CLAUDE.md.bak)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --yes)",
+      "Bash(mv CLAUDE.md.bak CLAUDE.md)",
+      "Read(//c/Prahaas/Claude Development/**)",
+      "Bash(npx create-next-app@latest fbl_temp --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --yes)",
+      "Bash(cp:*)",
+      "Bash(cp -r \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_temp/app\" \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_badminton/\")",
+      "Bash(cp \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_temp/package.json\" \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_badminton/\")",
+      "Bash(cp \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_temp/tsconfig.json\" \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_badminton/\")",
+      "Bash(cp \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_temp/next.config.ts\" \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_badminton/\")",
+      "Bash(cp \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_temp/postcss.config.mjs\" \"C:\\\\Prahaas\\\\Claude Development\\\\fbl_badminton/\")",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \":*)",
+      "Bash(npx next:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
