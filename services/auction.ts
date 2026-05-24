@@ -85,6 +85,9 @@ export class AuctionService {
       return this.auctionRepo.updateSession(existing.id, { status: 'active' })
     }
 
+    const tournament = await this.tournamentRepo.findById(tournamentId)
+    if (!tournament) throw new Error('Tournament not found')
+
     const unassignedPlayers = await this.playerRepo.findUnassigned(tournamentId)
     const captains = await this.playerRepo.findCaptains(tournamentId)
 
@@ -94,6 +97,21 @@ export class AuctionService {
 
     if (nonCaptainPlayers.length === 0) {
       throw new Error('No players available for auction')
+    }
+
+    // If captain_is_player, auto-assign each captain to their team and deduct base price
+    if (tournament.captain_is_player) {
+      const teams = await this.teamRepo.findByTournament(tournamentId)
+      for (const captain of captains) {
+        const team = teams.find((t) => t.captain_id === captain.id)
+        if (!team) continue
+        const alreadyOnTeam = (team.players ?? []).some((p) => p.id === captain.id)
+        if (alreadyOnTeam) continue
+        await this.teamRepo.addPlayer({ team_id: team.id, player_id: captain.id })
+        if (captain.base_price > 0) {
+          await this.teamRepo.deductBalance(team.id, captain.base_price)
+        }
+      }
     }
 
     const firstPlayer = nonCaptainPlayers[0]
