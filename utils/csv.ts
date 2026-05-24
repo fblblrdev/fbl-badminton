@@ -40,9 +40,14 @@ export function parseCSV(text: string): CSVPlayer[] {
       throw new Error(`Row ${i + 1}: Player name is required`)
     }
 
-    const gender = row.gender?.toLowerCase()
-    if (gender !== 'male' && gender !== 'female') {
-      throw new Error(`Row ${i + 1}: Gender must be "male" or "female", got "${row.gender}"`)
+    const genderRaw = row.gender?.trim().toLowerCase()
+    let gender: 'male' | 'female'
+    if (genderRaw === 'male' || genderRaw === 'm') {
+      gender = 'male'
+    } else if (genderRaw === 'female' || genderRaw === 'f' || genderRaw === 'w') {
+      gender = 'female'
+    } else {
+      throw new Error(`Row ${i + 1}: Gender must be Male/M or Female/F/W, got "${row.gender}"`)
     }
 
     players.push({
