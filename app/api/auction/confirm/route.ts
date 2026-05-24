@@ -23,14 +23,14 @@ export async function POST(request: Request) {
     }
 
     const service = new AuctionService(supabase)
-    const auctionResult = await service.confirmBid(
+    const { result: auctionResult, session } = await service.confirmBidAndAdvance(
       result.data.session_id,
       result.data.player_id,
       result.data.team_id,
       result.data.amount
     )
 
-    return NextResponse.json({ data: auctionResult }, { status: 201 })
+    return NextResponse.json({ data: { result: auctionResult, session } }, { status: 201 })
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Internal server error' },

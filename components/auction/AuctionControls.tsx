@@ -18,6 +18,7 @@ import { useStartAuction, useConfirmBid, useNextPlayer } from '@/hooks/useAuctio
 import { toast } from '@/hooks/use-toast'
 import type { AuctionSession, AuctionBid, Player } from '@/types'
 
+
 interface AuctionControlsProps {
   session: AuctionSession | null
   currentBid: AuctionBid | null
@@ -61,8 +62,6 @@ export function AuctionControls({
         tournament_id: tournamentId,
       })
       toast({ title: `${currentPlayer.name} sold to ${currentBid.team?.name}!` })
-      // Automatically advance to the next player
-      await nextPlayer.mutateAsync({ session_id: session.id, tournament_id: tournamentId })
     } catch (err) {
       toast({
         title: 'Error',

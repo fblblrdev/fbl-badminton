@@ -195,12 +195,12 @@ export class AuctionService {
     return bid
   }
 
-  async confirmBid(
+  async confirmBidAndAdvance(
     sessionId: string,
     playerId: string,
     teamId: string,
     amount: number
-  ): Promise<AuctionResult> {
+  ): Promise<{ result: AuctionResult; session: AuctionSession }> {
     const session = await this.auctionRepo.findSessionById(sessionId)
     if (!session) throw new Error('Session not found')
     if (session.current_player_id !== playerId) {
@@ -228,7 +228,10 @@ export class AuctionService {
 
     await this.teamRepo.deductBalance(teamId, amount)
 
-    return result
+    // Immediately advance to next player in the same request
+    const updatedSession = await this.moveToNextPlayer(sessionId)
+
+    return { result, session: updatedSession }
   }
 
   async moveToNextPlayer(sessionId: string): Promise<AuctionSession> {
