@@ -103,6 +103,9 @@ export async function POST(request: Request, { params }: Params) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (adminClient as any).from('profiles').update({ role: 'CAPTAIN' }).eq('id', newUser.user.id)
 
+  // 4. Store the captain's login email on the player record so the captain page can look them up
+  await playerRepo.update(captain_player_id, { email: captain_email })
+
   return NextResponse.json({
     team,
     captain: {

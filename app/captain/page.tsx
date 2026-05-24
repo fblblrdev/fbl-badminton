@@ -16,9 +16,10 @@ export default async function CaptainPage() {
 
   if (!user) return null
 
+  // Primary lookup: find captain player by email (set when team is created)
   const { data: captainPlayerData } = await supabase
     .from('players')
-    .select('*, teams!inner(*)')
+    .select('id')
     .eq('email', user.email ?? '')
     .eq('is_captain', true)
     .maybeSingle()
@@ -30,6 +31,14 @@ export default async function CaptainPage() {
   let team = null
   if (captainPlayer?.id) {
     team = await teamRepo.findByCaptain(captainPlayer.id)
+  }
+
+  // Fallback: use team_id from auth user metadata (set when captain account is created)
+  if (!team) {
+    const teamId = user.user_metadata?.team_id as string | undefined
+    if (teamId) {
+      team = await teamRepo.findById(teamId)
+    }
   }
 
   const players = team?.players ?? []
