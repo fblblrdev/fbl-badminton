@@ -90,6 +90,7 @@ export async function POST(request: Request, { params }: Params) {
   })
 
   if (createError) {
+    console.error('[create-captain] auth.admin.createUser error:', JSON.stringify(createError))
     // Roll back team creation
     await supabase.from('teams').delete().eq('id', team.id)
     return NextResponse.json({ error: createError.message }, { status: 400 })

@@ -22,7 +22,7 @@ $$ LANGUAGE SQL SECURITY DEFINER STABLE;
 
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
-  SELECT role IN ('SUPER_ADMIN', 'TOURNAMENT_MANAGER') FROM profiles WHERE id = auth.uid();
+  SELECT role = 'SUPER_ADMIN' FROM profiles WHERE id = auth.uid();
 $$ LANGUAGE SQL SECURITY DEFINER STABLE;
 
 -- PROFILES
@@ -51,12 +51,9 @@ CREATE POLICY "tournaments_select_all" ON tournaments
 CREATE POLICY "tournaments_insert_admin" ON tournaments
   FOR INSERT WITH CHECK (public.is_admin());
 
--- Only admins and the creator can update tournaments
+-- Only super admins can update tournaments
 CREATE POLICY "tournaments_update_admin_creator" ON tournaments
-  FOR UPDATE USING (
-    public.user_role() = 'SUPER_ADMIN'
-    OR (public.user_role() = 'TOURNAMENT_MANAGER' AND created_by = auth.uid())
-  );
+  FOR UPDATE USING (public.user_role() = 'SUPER_ADMIN');
 
 -- Only super admins can delete
 CREATE POLICY "tournaments_delete_super_admin" ON tournaments
