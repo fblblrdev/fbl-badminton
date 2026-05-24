@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { CreateTeamForm } from '@/components/teams/CreateTeamForm'
+import { DeleteTeamButton } from '@/components/teams/DeleteTeamButton'
 import { Crown, Users } from 'lucide-react'
 
 interface Props {
@@ -57,11 +58,14 @@ export default async function TeamsPage({ params }: Props) {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base">{team.name}</CardTitle>
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-emerald-400">
-                        {team.balance.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-slate-500">pts remaining</p>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-emerald-400">
+                          {team.balance.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-slate-500">pts remaining</p>
+                      </div>
+                      <DeleteTeamButton teamId={team.id} teamName={team.name} tournamentId={id} />
                     </div>
                   </div>
                 </CardHeader>
