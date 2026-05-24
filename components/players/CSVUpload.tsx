@@ -14,10 +14,10 @@ interface CSVUploadProps {
 }
 
 const TEMPLATE_ROWS = [
-  'name,gender,skill_category,base_price,is_captain,phone,email',
-  'John Doe,male,Advanced,500,false,+91 9876543210,john@example.com',
-  'Jane Smith,female,Intermediate,300,true,+91 9876500000,jane@example.com',
-  'Alex Kumar,male,Beginner,100,false,,',
+  'name,gender,skill_category',
+  'John Doe,Male,Advanced',
+  'Jane Smith,Female,Intermediate',
+  'Alex Kumar,M,Beginner',
 ]
 
 function downloadTemplate() {
@@ -138,10 +138,10 @@ export function CSVUpload({ onUpload, isLoading }: CSVUploadProps) {
           <p className="text-slate-300 font-medium">Drop your CSV file here</p>
           <p className="text-slate-500 text-sm mt-1">or click to browse</p>
           <p className="text-slate-600 text-xs mt-3">
-            Required columns: name, gender, skill_category, base_price
+            Required columns: name, gender, skill_category
           </p>
           <p className="text-slate-600 text-xs">
-            Optional: is_captain, phone, email
+            Gender: Male/M or Female/F/W
           </p>
         </div>
       )}
@@ -187,7 +187,6 @@ export function CSVUpload({ onUpload, isLoading }: CSVUploadProps) {
                   <th className="px-3 py-2 text-left text-xs text-slate-400 font-medium">Name</th>
                   <th className="px-3 py-2 text-left text-xs text-slate-400 font-medium">Gender</th>
                   <th className="px-3 py-2 text-left text-xs text-slate-400 font-medium">Category</th>
-                  <th className="px-3 py-2 text-left text-xs text-slate-400 font-medium">Base Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,7 +195,6 @@ export function CSVUpload({ onUpload, isLoading }: CSVUploadProps) {
                     <td className="px-3 py-2 text-white">{player.name}</td>
                     <td className="px-3 py-2 text-slate-300 capitalize">{player.gender}</td>
                     <td className="px-3 py-2 text-slate-300">{player.skill_category}</td>
-                    <td className="px-3 py-2 text-blue-400">{player.base_price}</td>
                   </tr>
                 ))}
               </tbody>
@@ -216,9 +214,8 @@ export function CSVUpload({ onUpload, isLoading }: CSVUploadProps) {
 
       <div className="p-3 bg-slate-900/50 rounded-md border border-slate-800">
         <p className="text-xs font-medium text-slate-400 mb-1">Required columns:</p>
-        <p className="text-xs text-slate-500">name, gender (male/female), skill_category, base_price</p>
-        <p className="text-xs text-slate-600 mt-1">Optional: is_captain (true/false), phone, email</p>
-        <p className="text-xs text-slate-600 mt-1">skill_category must match the category names set in the tournament.</p>
+        <p className="text-xs text-slate-500">name, gender (Male/M or Female/F/W), skill_category</p>
+        <p className="text-xs text-slate-600 mt-1">skill_category must match the category names set in the tournament. Base price is taken from the category.</p>
       </div>
     </div>
   )

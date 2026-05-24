@@ -1,6 +1,6 @@
 import type { CSVPlayer } from '@/types'
 
-const REQUIRED_COLUMNS = ['name', 'gender', 'skill_category', 'base_price']
+const REQUIRED_COLUMNS = ['name', 'gender', 'skill_category']
 
 export function parseCSV(text: string): CSVPlayer[] {
   const lines = text.trim().split('\n')
@@ -54,10 +54,6 @@ export function parseCSV(text: string): CSVPlayer[] {
       name: row.name,
       gender,
       skill_category: row.skill_category ?? '',
-      base_price: row.base_price ?? '0',
-      is_captain: row.is_captain ?? 'false',
-      phone: row.phone ?? '',
-      email: row.email ?? '',
     })
   }
 
@@ -92,8 +88,8 @@ function parseCSVLine(line: string): string[] {
 }
 
 export function generateCSVTemplate(): string {
-  const headers = ['name', 'gender', 'skill_category', 'base_price', 'is_captain', 'phone', 'email']
-  const example = ['John Doe', 'male', 'Advanced', '500', 'false', '+91 9876543210', 'john@example.com']
+  const headers = ['name', 'gender', 'skill_category']
+  const example = ['John Doe', 'Male', 'Advanced']
   return [headers.join(','), example.join(',')].join('\n')
 }
 

@@ -205,10 +205,6 @@ export interface CSVPlayer {
   name: string
   gender: string
   skill_category: string
-  base_price: string
-  is_captain: string
-  phone: string
-  email: string
 }
 
 export interface AuthUser {

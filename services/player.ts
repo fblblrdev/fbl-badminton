@@ -81,10 +81,10 @@ export class PlayerService {
         name: csvPlayer.name.trim(),
         gender,
         skill_category_id: category?.id ?? null,
-        base_price: parseFloat(csvPlayer.base_price) || 0,
-        is_captain: csvPlayer.is_captain?.toLowerCase() === 'true' || csvPlayer.is_captain === '1',
-        phone: csvPlayer.phone?.trim() || null,
-        email: csvPlayer.email?.trim() || null,
+        base_price: category?.base_price ?? 0,
+        is_captain: false,
+        phone: null,
+        email: null,
       }
     })
 

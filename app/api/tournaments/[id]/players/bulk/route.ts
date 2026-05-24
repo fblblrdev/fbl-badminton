@@ -9,10 +9,6 @@ const bulkSchema = z.object({
     name: z.string().min(1),
     gender: z.string(),
     skill_category: z.string(),
-    base_price: z.string(),
-    is_captain: z.string().optional(),
-    phone: z.string().optional(),
-    email: z.string().optional(),
   })).min(1),
 })
 
@@ -40,13 +36,7 @@ export async function POST(request: Request, { params }: Params) {
     }
 
     const service = new PlayerService(supabase)
-    const csvPlayers = result.data.players.map((p) => ({
-      ...p,
-      is_captain: p.is_captain ?? 'false',
-      phone: p.phone ?? '',
-      email: p.email ?? '',
-    }))
-    const players = await service.bulkCreateFromCSV(id, csvPlayers)
+    const players = await service.bulkCreateFromCSV(id, result.data.players)
 
     return NextResponse.json({ data: players }, { status: 201 })
   } catch (err) {
